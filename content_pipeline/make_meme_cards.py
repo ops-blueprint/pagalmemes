@@ -91,6 +91,55 @@ def make_meme_card(meme, out_path, page_handle="@YourPage"):
     return out_path
 
 
+REEL_W, REEL_H = 1080, 1920
+
+
+def make_meme_card_vertical(meme, out_path, page_handle="@YourPage"):
+    """9:16 version for Reels. Keeps text away from where Facebook's own Reels UI
+    (caption, follow button, like/comment/share icons) overlays the bottom/right
+    edges when actually played back in the app."""
+    accent = tuple(meme["accent"])
+    img = Image.new("RGB", (REEL_W, REEL_H), BG)
+    draw = ImageDraw.Draw(img)
+
+    margin = 90
+    safe_right = REEL_W - 160  # keep clear of Reels' right-edge action icons
+
+    draw.rectangle([0, 0, REEL_W, 16], fill=accent)
+
+    badge_font = ImageFont.truetype(str(FONT_BOLD), 38)
+    badge_text = meme["label"]
+    bbox = draw.textbbox((0, 0), badge_text, font=badge_font)
+    badge_w = (bbox[2] - bbox[0]) + 52
+    badge_h = (bbox[3] - bbox[1]) + 30
+    draw.rounded_rectangle([margin, 140, margin + badge_w, 140 + badge_h], radius=badge_h / 2, fill=accent)
+    draw.text((margin + 26, 140 + 15 - bbox[1]), badge_text, font=badge_font, fill=(15, 15, 15))
+
+    # Main text centered in the middle band -- clear of top badge and bottom Reels UI
+    area_top, area_bottom = 420, 1380
+    body_font, lines, line_height = fit_text(
+        draw, meme["text"], FONT_BLACK,
+        max_width=safe_right - margin, max_height=area_bottom - area_top, start_size=92, min_size=44
+    )
+    block_height = line_height * len(lines)
+    y = area_top + max(0, (area_bottom - area_top - block_height) // 2)
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=body_font)
+        line_w = bbox[2] - bbox[0]
+        x = margin + max(0, (safe_right - margin - line_w) // 2)
+        draw.text((x, y), line, font=body_font, fill=(255, 255, 255))
+        y += line_height
+
+    # Handle placed above the zone where Facebook's own Reels caption/UI usually sits
+    footer_font = ImageFont.truetype(str(FONT_BOLD), 38)
+    cta_font = ImageFont.truetype(str(FONT_REGULAR), 32)
+    draw.text((margin, 1500), page_handle, font=footer_font, fill=accent)
+    draw.text((margin, 1550), "Follow for daily memes", font=cta_font, fill=(220, 220, 220))
+
+    img.save(out_path, quality=95)
+    return out_path
+
+
 def main():
     parser = argparse.ArgumentParser(description="Render meme cards from a memes JSON file")
     parser.add_argument("--memes", default=str(BASE_DIR / "memes_today.json"))
