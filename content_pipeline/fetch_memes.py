@@ -17,6 +17,8 @@ CATEGORY_LABEL = {
     "weekend": "WEEKEND VIBES",
     "relationships": "RELATIONSHIPS",
     "introvert": "INTROVERT LIFE",
+    "toxic_friends": "FRIEND FAILS",
+    "trends": "TRENDING NOW",
 }
 
 CATEGORY_ACCENT = {
@@ -27,6 +29,8 @@ CATEGORY_ACCENT = {
     "weekend": (34, 197, 94),
     "relationships": (236, 72, 153),
     "introvert": (94, 234, 212),
+    "toxic_friends": (251, 113, 133),
+    "trends": (249, 115, 22),
 }
 
 

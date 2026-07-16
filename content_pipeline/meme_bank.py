@@ -95,6 +95,30 @@ MEMES = {
         "I peaked socially the moment I said 'maybe' and meant 'no.'",
         "Introvert superpower: hearing my name called and immediately not responding.",
     ],
+    "toxic_friends": [
+        "Nothing like a 'friend' who only texts when they need something.",
+        "The audacity of someone who never texts first getting mad you didn't text first.",
+        "Some friendships are just two people competing over who cares less.",
+        "'No offense but' has never once been followed by something that wasn't offensive.",
+        "Fake friends: know your Starbucks order, don't know your struggles.",
+        "The friend who's always 'so busy' except when they need a favor.",
+        "Nothing exposes a friendship faster than one of you actually doing well.",
+        "'I'm just being honest' is doing a lot of heavy lifting for that rude comment.",
+        "Some people only show up to your life during the highlight reel.",
+        "The real plot twist is finding out who was talking about you the whole time.",
+    ],
+    "trends": [
+        "By the time I understand a trend, it's already considered cringe.",
+        "I found out about the trend three weeks after everyone stopped doing it.",
+        "The algorithm knows me better than my therapist at this point.",
+        "Everyone's doing the trend and I'm still stuck on the one from last year.",
+        "I don't chase trends, trends politely leave before I arrive.",
+        "My 'For You' page has more personality than I do.",
+        "Watching a trend die the exact week I finally tried it.",
+        "I refresh the app hoping for something new and get the same trend, again.",
+        "Being 'terminally online' is not a compliment but here we are.",
+        "The trend cycle moves faster than my ability to care about it.",
+    ],
 }
 
 ALL_MEMES = [(category, text) for category, items in MEMES.items() for text in items]
