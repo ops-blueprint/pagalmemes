@@ -49,9 +49,14 @@ def main():
 
     handle = os.environ.get("PAGE_HANDLE", "@YourPage")
     make_meme_cards.make_meme_card_vertical(meme, image_path, page_handle=handle)
-    make_reel.make_reel(image_path, video_path)
+    music_path, attribution = make_reel.pick_track()
+    make_reel.make_reel(image_path, video_path, music_path=music_path)
 
-    caption = f"{meme['text']}\n\n#Memes #Reels #Relatable #DailyMemes #{meme['category'].replace('_', '')}"
+    caption = (
+        f"{meme['text']}\n\n"
+        f"#Memes #Reels #Relatable #DailyMemes #{meme['category'].replace('_', '')}\n\n"
+        f"Music: {attribution}"
+    )
 
     page_id = os.environ.get("FB_PAGE_ID")
     token = os.environ.get("FB_PAGE_ACCESS_TOKEN")
