@@ -4,3 +4,5 @@ __pycache__/
 fb_auto_poster/.env
 .DS_Store
 .claude/
+content_pipeline/output/_auto/
+content_pipeline/output/_auto_reels/
