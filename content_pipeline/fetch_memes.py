@@ -5,6 +5,7 @@ import random
 from pathlib import Path
 
 from meme_bank import ALL_MEMES
+from template_bank import SPLIT_JOKES, COMPARISON_JOKES
 
 BASE_DIR = Path(__file__).resolve().parent
 USED_LOG = BASE_DIR / "used_memes.json"
@@ -82,3 +83,25 @@ def pick_memes(count, used):
             })
 
     return picked
+
+
+def pick_split_joke(used):
+    """Pick one unused (expectation, reality) pair. Dedupe keys are prefixed
+    'split:' so they share used_memes.json without colliding with other banks."""
+    available = [(t, b) for t, b in SPLIT_JOKES if f"split:{t[:60]}" not in used]
+    if not available:
+        for t, b in SPLIT_JOKES:
+            used.discard(f"split:{t[:60]}")
+        available = list(SPLIT_JOKES)
+    return random.choice(available)
+
+
+def pick_comparison_joke(used):
+    """Pick one unused (rejected, approved) pair. Dedupe keys are prefixed
+    'cmp:' so they share used_memes.json without colliding with other banks."""
+    available = [(r, a) for r, a in COMPARISON_JOKES if f"cmp:{r[:60]}" not in used]
+    if not available:
+        for r, a in COMPARISON_JOKES:
+            used.discard(f"cmp:{r[:60]}")
+        available = list(COMPARISON_JOKES)
+    return random.choice(available)

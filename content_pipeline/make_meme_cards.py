@@ -91,6 +91,108 @@ def make_meme_card(meme, out_path, page_handle="@YourPage"):
     return out_path
 
 
+def draw_checkmark(draw, cx, cy, size, color, width=10):
+    p1 = (cx - size * 0.5, cy)
+    p2 = (cx - size * 0.15, cy + size * 0.4)
+    p3 = (cx + size * 0.55, cy - size * 0.45)
+    draw.line([p1, p2], fill=color, width=width)
+    draw.line([p2, p3], fill=color, width=width)
+
+
+def draw_x_mark(draw, cx, cy, size, color, width=10):
+    half = size * 0.5
+    draw.line([(cx - half, cy - half), (cx + half, cy + half)], fill=color, width=width)
+    draw.line([(cx - half, cy + half), (cx + half, cy - half)], fill=color, width=width)
+
+
+def make_split_card(top_text, bottom_text, out_path, page_handle="@YourPage",
+                     top_label="EXPECTATION", bottom_label="REALITY",
+                     top_color=(59, 130, 246), bottom_color=(239, 68, 68)):
+    """Two-panel split format (e.g. Expectation vs Reality) -- fully original
+    layout, drawn shapes only, no copyrighted characters or images."""
+    img = Image.new("RGB", (W, H), BG)
+    draw = ImageDraw.Draw(img)
+    margin = 70
+    mid_y = H // 2
+
+    draw.rectangle([0, 0, W, mid_y], fill=(22, 26, 36))
+    draw.rectangle([0, mid_y, W, H], fill=(30, 20, 22))
+    draw.rectangle([0, mid_y - 4, W, mid_y + 4], fill=(10, 10, 12))
+
+    label_font = ImageFont.truetype(str(FONT_BLACK), 52)
+    draw.text((margin, 60), top_label, font=label_font, fill=top_color)
+    draw.text((margin, mid_y + 60), bottom_label, font=label_font, fill=bottom_color)
+
+    body_font_top, lines_top, lh_top = fit_text(
+        draw, top_text, FONT_REGULAR, max_width=W - 2 * margin, max_height=mid_y - 220, start_size=56, min_size=30
+    )
+    y = 170
+    for line in lines_top:
+        draw.text((margin, y), line, font=body_font_top, fill=(235, 235, 235))
+        y += lh_top
+
+    body_font_bot, lines_bot, lh_bot = fit_text(
+        draw, bottom_text, FONT_REGULAR, max_width=W - 2 * margin, max_height=mid_y - 220, start_size=56, min_size=30
+    )
+    y = mid_y + 170
+    for line in lines_bot:
+        draw.text((margin, y), line, font=body_font_bot, fill=(235, 235, 235))
+        y += lh_bot
+
+    footer_font = ImageFont.truetype(str(FONT_BOLD), 32)
+    draw.text((margin, H - 55), page_handle, font=footer_font, fill=(210, 210, 210))
+
+    img.save(out_path, quality=95)
+    return out_path
+
+
+def make_comparison_card(rejected_text, approved_text, out_path, page_handle="@YourPage"):
+    """Two-row approve/reject comparison format -- generic checkmark/X icons,
+    fully original geometry, no reference to any existing meme character."""
+    img = Image.new("RGB", (W, H), BG)
+    draw = ImageDraw.Draw(img)
+    margin = 70
+    icon_col_w = 150
+    row_h = (H - 220) // 2
+
+    red = (239, 68, 68)
+    green = (34, 197, 94)
+
+    # Row 1: rejected
+    row1_top = 140
+    draw.rounded_rectangle([margin, row1_top, W - margin, row1_top + row_h], radius=24, outline=red, width=5)
+    draw_x_mark(draw, margin + icon_col_w // 2, row1_top + row_h // 2, 70, red)
+    font1, lines1, lh1 = fit_text(
+        draw, rejected_text, FONT_REGULAR,
+        max_width=W - 2 * margin - icon_col_w - 40, max_height=row_h - 40, start_size=46, min_size=26
+    )
+    block_h1 = lh1 * len(lines1)
+    y = row1_top + max(0, (row_h - block_h1) // 2)
+    for line in lines1:
+        draw.text((margin + icon_col_w, y), line, font=font1, fill=(235, 235, 235))
+        y += lh1
+
+    # Row 2: approved
+    row2_top = row1_top + row_h + 40
+    draw.rounded_rectangle([margin, row2_top, W - margin, row2_top + row_h], radius=24, outline=green, width=5)
+    draw_checkmark(draw, margin + icon_col_w // 2, row2_top + row_h // 2, 70, green)
+    font2, lines2, lh2 = fit_text(
+        draw, approved_text, FONT_REGULAR,
+        max_width=W - 2 * margin - icon_col_w - 40, max_height=row_h - 40, start_size=46, min_size=26
+    )
+    block_h2 = lh2 * len(lines2)
+    y = row2_top + max(0, (row_h - block_h2) // 2)
+    for line in lines2:
+        draw.text((margin + icon_col_w, y), line, font=font2, fill=(235, 235, 235))
+        y += lh2
+
+    footer_font = ImageFont.truetype(str(FONT_BOLD), 32)
+    draw.text((margin, H - 55), page_handle, font=footer_font, fill=(210, 210, 210))
+
+    img.save(out_path, quality=95)
+    return out_path
+
+
 REEL_W, REEL_H = 1080, 1920
 
 
