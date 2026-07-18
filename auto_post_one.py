@@ -30,8 +30,8 @@ import post_to_facebook
 FORMAT_WEIGHTS = {"single": 0.5, "split": 0.25, "comparison": 0.25}
 
 
-def build_post(used, handle, out_path):
-    fmt = random.choices(list(FORMAT_WEIGHTS.keys()), weights=list(FORMAT_WEIGHTS.values()), k=1)[0]
+def build_post(used, handle, out_path, force_format=None):
+    fmt = force_format or random.choices(list(FORMAT_WEIGHTS.keys()), weights=list(FORMAT_WEIGHTS.values()), k=1)[0]
 
     if fmt == "single":
         memes = fetch_memes.pick_memes(count=1, used=used)
@@ -63,6 +63,8 @@ def build_post(used, handle, out_path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", help="Generate the card but don't post it")
+    parser.add_argument("--format", choices=["single", "split", "comparison"], default=None,
+                         help="Force a specific format instead of the weighted-random pick (for testing)")
     args = parser.parse_args()
 
     load_dotenv(BASE_DIR / "fb_auto_poster" / ".env")
@@ -75,7 +77,7 @@ def main():
     image_path = out_dir / f"post_{stamp}.png"
 
     handle = os.environ.get("PAGE_HANDLE", "@YourPage")
-    result = build_post(used, handle, image_path)
+    result = build_post(used, handle, image_path, force_format=args.format)
 
     if result is None:
         print("No memes available -- skipping this run.")
